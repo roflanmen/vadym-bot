@@ -41,7 +41,7 @@ def slowModePoll(poll, message):
     chat_id = poll.chat.id
     poll = bot.stop_poll(chat_id, poll.message_id)
     res = [poll.options[0].voter_count, poll.options[1].voter_count]
-    if(len(message.text.split())<2):
+    if(len(message.text.split())<2 or float(message.text.split()[-1]) < 0.5):
         text = message.text + " 0.5"
     else:
         text = message.text
