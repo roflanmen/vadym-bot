@@ -41,15 +41,19 @@ def slowModePoll(poll, message):
     chat_id = poll.chat.id
     poll = bot.stop_poll(chat_id, poll.message_id)
     res = [poll.options[0].voter_count, poll.options[1].voter_count]
+    if(len(message.text.split())<2):
+        text = message.text + " 5"
+    else:
+        text = message.text
     if sum(res) > 0 and res[0] > res[1]:
         f = open('data.json')
         data = json.load(f)
         f.close()
-        data[user.id] = round(float(message.text.split()[-1])*60)
+        data[user.id] = round(float(text.split()[-1])*60)
         f = open('data.json', 'w')
         json.dump(data, f)
         f.close()
-        bot.reply_to(message, "Enabled slowmode(" + message.text.split()[-1] + " minutes)")
+        bot.reply_to(message, "Enabled slowmode(" + text.split()[-1] + " minutes)")
     else:
         bot.reply_to(message, "Not enough votes")
 
