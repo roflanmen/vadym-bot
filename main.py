@@ -72,7 +72,10 @@ def unmutePoll(poll, message):
         f = open('data.json')
         data = json.load(f)
         f.close()
-        del data[str(user.id)]
+        try:
+            del data[str(user.id)]
+        except:
+            pass
         f = open('data.json', 'w')
         json.dump(data, f)
         f.close()
