@@ -32,7 +32,7 @@ def slowmode(message):
     user_id = message.reply_to_message.from_user.id
     user_name = message.reply_to_message.from_user.first_name
     poll = bot.send_poll(message.chat.id, "Enable slowmode for " + user_name, ["+", "-"], is_anonymous=False)
-    t = Timer(15.0, slowModePoll, [poll, message])
+    t = Timer(45.0, slowModePoll, [poll, message])
     t.start()
 
 
@@ -64,7 +64,7 @@ def unmute(message):
     user_id = message.reply_to_message.from_user.id
     user_name = message.reply_to_message.from_user.first_name
     poll = bot.send_poll(message.chat.id, "Unmute " + user_name, ["+", "-"], is_anonymous=False)
-    t = Timer(15.0, unmutePoll, [poll, message])
+    t = Timer(45.0, unmutePoll, [poll, message])
     t.start()
 
 def unmutePoll(poll, message):
