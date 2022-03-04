@@ -5,3 +5,4 @@ cryptography
 python-telegram-bot
 pyTelegramBotAPI
 telebot
+flask

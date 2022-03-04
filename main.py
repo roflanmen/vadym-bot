@@ -4,6 +4,8 @@ import telebot
 from threading import Timer
 from telebot.types import Poll
 from threading import Thread
+from flask import Flask, request, send_from_directory
+import os
 
 bot = telebot.TeleBot("2120627711:AAHVELyz-B9wmFR_gmYBsN1h7rpsis6vfek")
 
@@ -84,16 +86,8 @@ def clear(message):
 
 Thread(target=bot.infinity_polling).start()
 
-import http.server
-import socketserver
-import os
+app = Flask(__name__,
+            static_url_path='', 
+            static_folder='web')
 
-PORT = int(os.environ.get("PORT", 5000))
-
-web_dir = os.path.join(os.path.dirname(__file__), 'web')
-os.chdir(web_dir)
-
-Handler = http.server.SimpleHTTPRequestHandler
-httpd = socketserver.TCPServer(("", PORT), Handler)
-print("serving at port", PORT)
-httpd.serve_forever()
+app.run(port = int(os.environ.get("PORT", 5000)))
