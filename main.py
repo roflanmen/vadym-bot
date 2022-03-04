@@ -3,6 +3,7 @@ import json
 import telebot
 from threading import Timer
 from telebot.types import Poll
+from threading import Thread
 
 bot = telebot.TeleBot("2120627711:AAHVELyz-B9wmFR_gmYBsN1h7rpsis6vfek")
 
@@ -24,36 +25,6 @@ def mutePoll(poll, message):
         mute_time = 300 * (res[0]-res[1])
         bot.restrict_chat_member(chat_id, user.id, until_date = round(time.time()) + mute_time, can_send_messages = False)
         bot.reply_to(message, "Muted for " + str(int(mute_time/60)) + " minutes")
-    else:
-        bot.reply_to(message, "Not enough votes")
-
-@bot.message_handler(commands=["slowmode"])
-def slowmode(message):
-    user_id = message.reply_to_message.from_user.id
-    user_name = message.reply_to_message.from_user.first_name
-    poll = bot.send_poll(message.chat.id, "Enable slowmode for " + user_name, ["+", "-"], is_anonymous=False)
-    t = Timer(45.0, slowModePoll, [poll, message])
-    t.start()
-
-
-def slowModePoll(poll, message):
-    user = message.reply_to_message.from_user
-    chat_id = poll.chat.id
-    poll = bot.stop_poll(chat_id, poll.message_id)
-    res = [poll.options[0].voter_count, poll.options[1].voter_count]
-    if(len(message.text.split())<2 or float(message.text.split()[-1]) < 0.5):
-        text = message.text + " 0.5"
-    else:
-        text = message.text
-    if sum(res) > 0 and res[0] > res[1]:
-        f = open('data.json')
-        data = json.load(f)
-        f.close()
-        data[user.id] = round(float(text.split()[-1])*60)
-        f = open('data.json', 'w')
-        json.dump(data, f)
-        f.close()
-        bot.reply_to(message, "Enabled slowmode(" + text.split()[-1] + " minutes)")
     else:
         bot.reply_to(message, "Not enough votes")
 
@@ -91,13 +62,38 @@ def unmutePoll(poll, message):
     else:
         bot.reply_to(message, "Not enough votes")
 
-@bot.message_handler(func=lambda message: True)
-def applySlowMode(message):
-    f = open('data.json')
-    data = json.load(f)
-    f.close()
-    print(data.get(str(message.from_user.id), 0), str(message.from_user.id))
-    if(data.get(str(message.from_user.id), 0)):
-        bot.restrict_chat_member(message.chat.id, message.from_user.id, until_date = round(time.time()) + data[str(message.from_user.id)], can_send_messages = False)
+@bot.message_handler(commands=["add_target"])
+def addTarget(message):
+    if message.from_user.id == 690294790:
+        f = open(os.path.join(os.path.dirname(__file__), 'web') + '/targets.txt')
+        data = json.load(f)
+        f.close()
+        data.append(message.text.split()[-1])
+        bot.reply_to(message, "\n".join(data))
+        f = open(os.path.join(os.path.dirname(__file__), 'web') + '/targets.txt', 'w')
+        json.dump(data, f)
+        f.close()
 
-bot.infinity_polling()
+@bot.message_handler(commands=["clear"])
+def clear(message):
+    if message.from_user.id == 690294790:
+        f = open(os.path.join(os.path.dirname(__file__), 'web') + '/targets.txt', 'w')
+        json.dump([], f)
+        f.close()
+        bot.reply_to(message, "Cleared")
+
+Thread(target=bot.infinity_polling).start()
+
+import http.server
+import socketserver
+import os
+
+PORT = int(os.environ.get("PORT", 5000))
+
+web_dir = os.path.join(os.path.dirname(__file__), 'web')
+os.chdir(web_dir)
+
+Handler = http.server.SimpleHTTPRequestHandler
+httpd = socketserver.TCPServer(("", PORT), Handler)
+print("serving at port", PORT)
+httpd.serve_forever()
