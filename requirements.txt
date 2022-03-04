@@ -5,4 +5,3 @@ cryptography
 python-telegram-bot
 pyTelegramBotAPI
 telebot
-threading
