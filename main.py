@@ -6,6 +6,7 @@ from telebot.types import Poll
 from threading import Thread
 from flask import Flask, request, send_from_directory
 import os
+from pytube import YouTube
 
 bot = telebot.TeleBot("2120627711:AAHVELyz-B9wmFR_gmYBsN1h7rpsis6vfek")
 
@@ -30,6 +31,13 @@ def mutePoll(poll, message):
     else:
         bot.reply_to(message, "Not enough votes")
 
+@bot.message_handler(commands=["download"])
+def download(message):
+    yt = YouTube(message.text[10:])
+    yt.streams.get_audio_only().download("./")
+    audio = open(yt.title + ".mp3", "rb")
+    bot.send_document(message.chat.id, audio)
+    os.remove(yt.title + ".mp3")
 
 Thread(target=bot.infinity_polling).start()
 
