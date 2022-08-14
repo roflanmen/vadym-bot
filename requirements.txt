@@ -6,3 +6,4 @@ python-telegram-bot
 pyTelegramBotAPI
 telebot
 flask
+pytube
