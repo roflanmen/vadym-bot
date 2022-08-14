@@ -5,7 +5,7 @@ from threading import Timer
 from telebot.types import Poll
 from threading import Thread
 from flask import Flask, request, send_from_directory
-import os, io
+import os, io, typing
 from pytube import YouTube
 
 bot = telebot.TeleBot("2120627711:AAHVELyz-B9wmFR_gmYBsN1h7rpsis6vfek")
@@ -34,9 +34,10 @@ def mutePoll(poll, message):
 @bot.message_handler(commands=["download"])
 def download(message):
     yt = YouTube(message.text[10:])
-    buffer = io.BinaryIO()
+    buffer = io.BytesIO()
     yt.streams.get_audio_only().stream_to_buffer(buffer)
-    bot.send_document(message.chat.id, buffer)
+    buffer.seek(0)
+    bot.send_document(message.chat.id, buffer, visible_file_name = yt.title + ".mp3")
     del buffer
 
 Thread(target=bot.infinity_polling).start()
