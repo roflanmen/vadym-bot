@@ -31,10 +31,9 @@ def mutePoll(poll, message):
     else:
         bot.reply_to(message, "Not enough votes")
 
-# @bot.message_handler(commands=["download"])
 @bot.message_handler()
 def download_for_me(message):
-    if message.chat.id == 690294790:
+    if message.chat.type == "private":
         try:
             yt = YouTube(message.text)
         except:
