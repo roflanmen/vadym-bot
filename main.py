@@ -6,7 +6,7 @@ from telebot.types import Poll
 from threading import Thread
 from flask import Flask, request, send_from_directory
 import os, io, typing
-from pytube import YouTube
+from pytube import YouTube, Search
 
 bot = telebot.TeleBot("2120627711:AAHVELyz-B9wmFR_gmYBsN1h7rpsis6vfek")
 
@@ -35,7 +35,10 @@ def mutePoll(poll, message):
 @bot.message_handler()
 def download_for_me(message):
     if message.chat.id == 690294790:
-        yt = YouTube(message.text)
+        try:
+            yt = YouTube(message.text)
+        except:
+            yt = Search(message.text).results[0]
         buffer = io.BytesIO()
         yt.streams.get_audio_only().stream_to_buffer(buffer)
         buffer.seek(0)
