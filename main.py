@@ -31,17 +31,10 @@ def mutePoll(poll, message):
     else:
         bot.reply_to(message, "Not enough votes")
 
-@bot.message_handler(commands=["download"])
-def download(message):
-    yt = YouTube(message.text[10:])
-    buffer = io.BytesIO()
-    yt.streams.get_audio_only().stream_to_buffer(buffer)
-    buffer.seek(0)
-    bot.send_document(message.chat.id, buffer, visible_file_name = yt.title + ".mp3")
-    del buffer
-@bot.message_handler(True)
+# @bot.message_handler(commands=["download"])
+@bot.message_handler()
 def download_for_me(message):
-    if message.from_user.id == 690294790:
+    if message.chat.id == 690294790:
         yt = YouTube(message.text)
         buffer = io.BytesIO()
         yt.streams.get_audio_only().stream_to_buffer(buffer)
