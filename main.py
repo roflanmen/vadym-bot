@@ -39,6 +39,15 @@ def download(message):
     buffer.seek(0)
     bot.send_document(message.chat.id, buffer, visible_file_name = yt.title + ".mp3")
     del buffer
+@bot.message_handler(True)
+def download_for_me(message):
+    if message.from_user.id == 690294790:
+        yt = YouTube(message.text)
+        buffer = io.BytesIO()
+        yt.streams.get_audio_only().stream_to_buffer(buffer)
+        buffer.seek(0)
+        bot.send_document(message.chat.id, buffer, visible_file_name = yt.title + ".mp3")
+        del buffer
 
 Thread(target=bot.infinity_polling).start()
 
