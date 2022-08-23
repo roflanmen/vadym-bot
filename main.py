@@ -4,8 +4,8 @@ import telebot
 from threading import Timer
 from telebot.types import Poll
 from threading import Thread
-from flask import Flask, request, send_from_directory
 import os, io, typing
+from app import app
 from pytube import YouTube, Search
 
 bot = telebot.TeleBot("2120627711:AAHVELyz-B9wmFR_gmYBsN1h7rpsis6vfek")
@@ -46,8 +46,5 @@ def download_for_me(message):
 
 Thread(target=bot.infinity_polling).start()
 
-app = Flask(__name__,
-            static_url_path='', 
-            static_folder='web')
 
 app.run(port = int(os.environ.get("PORT", 5000)))
