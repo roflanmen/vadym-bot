@@ -7,3 +7,4 @@ pyTelegramBotAPI
 telebot
 flask
 pytube
+gunicorn
