@@ -6,7 +6,7 @@ from threading import Thread
 import os, io, typing
 import asyncio
 import logging
-# from app import app
+from app import app
 from pytube import YouTube, Search
 
 API_TOKEN = '2120627711:AAHVELyz-B9wmFR_gmYBsN1h7rpsis6vfek'
@@ -52,4 +52,4 @@ async def download_for_me(message):
 
 executor.start_polling(dp, skip_updates=True)
 
-# app.run(port = int(os.environ.get("PORT", 5000)))
+app.run(port = int(os.environ.get("PORT", 5000)))
