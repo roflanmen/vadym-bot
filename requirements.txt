@@ -8,3 +8,4 @@ telebot
 flask
 pytube
 gunicorn
+aiogram
