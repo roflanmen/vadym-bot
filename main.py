@@ -37,7 +37,9 @@ async def mutePoll(poll, message):
     else:
         await bot.send_message(chat_id, "Not enough votes", reply_to_message_id=message.message_id)
 
-@dp.message_handler()
+lmh = {}
+
+@dp.message_handler(content_types=types.ContentType.all())
 async def download_for_me(message):
     if message.chat.type == "private":
         try:
@@ -49,6 +51,17 @@ async def download_for_me(message):
         buffer.seek(0)
         await bot.send_document(message.chat.id, (yt.title + ".mp3", buffer))
         del buffer
+    else:
+        # if message.chat_id != -1001515830252: return
+        lmh[message.from_user.id] = lmh.get(message.from_user.id, []) + [time.time()]
+        if len(lmh[message.from_user.id]) > 5:
+            if time.time() - lmh[message.from_user.id][0] < 60:
+                await bot.restrict_chat_member(message.chat.id, message.from_user.id, until_date = round(time.time()) + 60, can_send_messages = False)
+                await bot.send_message(message.chat.id, "Muted for 1 minute", reply_to_message_id=message.message_id)
+                lmh[message.from_user.id] = []
+            lmh[message.from_user.id] = lmh[message.from_user.id][1:]
+
+
 
 executor.start_polling(dp, skip_updates=True)
 
