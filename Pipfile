@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 aiogram = "*"
-pytube = "*"
 flask = "*"
 
 [dev-packages]
